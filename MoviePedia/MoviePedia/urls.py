@@ -21,6 +21,7 @@ from register_login import views
 urlpatterns = [
     path('', IndexPageView.as_view(), name = 'index'),
     path('register_login/', include('register_login.urls')),
+    path('movies/', include('movies.urls')),
     path('logout/', views.user_logout, name = 'logout'),
     # path('login/', views.user_logout, name = 'login'),
     path('admin/', admin.site.urls),
