@@ -18,6 +18,9 @@ class Film(models.Model):
                             ]
     )
 
+    def __str__(self):
+        return self.title
+
 class Rate(models.Model):
     film = models.ForeignKey(Film, on_delete = models.CASCADE)
     rate_value = models.IntegerField(validators = [
@@ -25,6 +28,9 @@ class Rate(models.Model):
                             MaxValueValidator(10)
                             ]
     )
+
+    def __str__(self):
+        return str(self.rate_value)
 
 class Comment(models.Model):
     film = models.ForeignKey(Film, on_delete = models.CASCADE)
