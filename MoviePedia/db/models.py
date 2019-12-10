@@ -15,7 +15,7 @@ class Film(models.Model):
     runtime = models.IntegerField(validators = [
                             MinValueValidator(1),
                             MaxValueValidator(1000)
-                            ]
+                            ],
     )
 
     def __str__(self):

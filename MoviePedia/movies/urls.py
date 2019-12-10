@@ -4,7 +4,7 @@ from . import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('', views.FilmView, basename = 'Film')
+router.register('', views.FilmListView, basename = 'Film')
 
 urlpatterns = [
     re_path('(?P<filmid>[-\w]+)/comments/$', views.CommentsListView.as_view()),

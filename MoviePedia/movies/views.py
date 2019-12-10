@@ -1,16 +1,16 @@
 from django.shortcuts import render
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from db.models import Film, Rate, Comment, SubComment
 from movies.serializers import FilmSerializer, CommentSerializer, RateSerializer
 from movies.permissions import IsGetOrIsAuthenticated
 from django.http import Http404
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 
 # Create your views here.
-class FilmView(viewsets.ModelViewSet):
+class FilmListView(viewsets.ModelViewSet):
     permission_classes = [IsGetOrIsAuthenticated]
-
     serializer_class = FilmSerializer
     def get_queryset(self):
         queryset = Film.objects.all()
