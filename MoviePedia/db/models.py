@@ -18,6 +18,9 @@ class Film(models.Model):
                             ],
     )
 
+    class Meta:
+        ordering = ['-year']
+
     def __str__(self):
         return self.title
 
@@ -30,12 +33,16 @@ class Rate(models.Model):
     )
 
     def __str__(self):
-        return str(self.rate_value)
+        return str(self.film.title) + str(self.rate_value)
 
 class Comment(models.Model):
     film = models.ForeignKey(Film, on_delete = models.CASCADE)
     comment_content = models.CharField(max_length = 500)
+    add_date = models.DateTimeField(auto_now=True)
+    related_to = models.IntegerField(blank = True, default = None, null = True)
 
-class SubComment(models.Model):
-    comment_index = models.ForeignKey(Comment, on_delete = models.CASCADE)
-    subcomment_content = models.CharField(max_length = 500)
+    class Meta:
+        ordering = ['add_date']
+
+    def __str__(self):
+        return str(self.comment_content[:15])
