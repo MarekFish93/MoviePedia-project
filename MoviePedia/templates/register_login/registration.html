@@ -3,7 +3,6 @@
 {% load staticfiles %}
 {% block body_block %}
 
-<div class="jumbotron">
   {% if registered %}
     <h1>Thank you for registering!</h1>
   {% else %}
@@ -18,6 +17,10 @@
       {{ profile_form.as_p }}
       <input type="Submit" class="btn btn-primary" value="Register">
     </form>
+    {% if warning %}
+      <div class="alert alert-success" role="alert">
+        {{warning}}
+      </div>
+    {% endif %}
   {% endif %}
-</div>
 {% endblock %}

@@ -1,8 +1,35 @@
 <!DOCTYPE html>
 {% extends 'register_login/base.html' %}
 {% block body_block %}
+{% load staticfiles %}
 
+
+<h1>Check our films' database!</h1>
 <div class="container">
-  <h1>adasd</h1>
+<form method = "POST" action="">
+  {% csrf_token %}
+  <div class="form-row">
+    <div class="col">
+      <input type="text" id = "title" name = 'title' class="form-control" placeholder="Title" value = "{{ current_title }}">
+    </div>
+    <div class="col">
+      <input type="number" id = "year" name = "year" class="form-control" placeholder="Year" value = "{{ current_year }}" min = "1900">
+    </div>
+    <input type = "submit" class="btn btn-primary" value="Search"
+  </div>
+</form>
 </div>
+
+{% if film %}
+  <div class="alert alert-light" role="alert">
+    {{count_message}}
+  </div>
+  <div class="list-group">
+    {% for i in film %}
+    <a href="{% url 'film:detail' i.id %}" class="list-group-item list-group-item-action">
+      {{i}} from {{i.year}}
+    </a>
+    {% endfor %}
+  </div>
+{% endif %}
 {% endblock %}

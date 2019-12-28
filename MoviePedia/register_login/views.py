@@ -5,10 +5,50 @@ from register_login.forms import UserForm, UserProfileInfoForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
+from .forms import FilmListForm
+from db.models import Film
 
-# Create your views here.
-class IndexPageView(TemplateView):
-    template_name = 'register_login/index.html'
+def index(request):
+    if request.method == 'POST':
+        title_form = request.POST.get('title')
+        year_form = request.POST.get('year')
+
+        if title_form and year_form:
+            film = Film.objects.filter(title__icontains = title_form, year = int(year_form))
+            if film:
+                count = len(film)
+                count_message = f"I have found {count} positions."
+            else:
+                film = Film.objects.all()
+                count = len(film)
+                count_message = f"I have found 0 movies for your request so let me show you my whole collection of {count} positions."
+        elif title_form:
+            film = Film.objects.filter(title__icontains = title_form)
+            if film:
+                count = len(film)
+                count_message = f"I have found {count} positions."
+            else:
+                film = Film.objects.all()
+                count = len(film)
+                count_message = f"I have found 0 movies for your request so let me show you my whole collection of {count} positions."
+        elif year_form:
+            film = Film.objects.filter(year = int(year_form))
+            if film:
+                count = len(film)
+                count_message = f"I have found {count} positions."
+            else:
+                film = Film.objects.all()
+                count = len(film)
+                count_message = f"I have found 0 movies for your request so let me show you my whole collection of {count} positions."
+        else:
+            film = Film.objects.all()
+            count = len(film)
+            count_message = f"I have found 0 movies for your request so let me show you my whole collection of {count} positions."
+
+        return render(request, 'register_login/index.html',{'film':film,
+                                                        'count_message':count_message})
+    else:
+        return render(request, 'register_login/index.html',{})
 
 @login_required
 def user_logout(request):
@@ -17,6 +57,7 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('index'))
 
 def user_login(request):
+    warning = ''
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -30,16 +71,14 @@ def user_login(request):
             else:
                 return HttpResponse('ACCOUNT NOT ACTIVE')
         else:
-            print('Someone tried to login and failed')
-            print(f'Username: {username} and password {password}')
-
-            return HttpResponse('invalid login details supplied')
+            warning = 'Invalid login details supplied.'
+            return render(request, 'register_login/login.html', {'warning':warning})
 
     else:
         return render(request, 'register_login/login.html', {})
 
 def register(request):
-
+    warning = ''
     registered = False
 
     if request.method == "POST":
@@ -61,6 +100,8 @@ def register(request):
 
                 registered = True
 
+            warning = 'Succesfully added'
+
         else:
             print(user_form.errors, profile_form.errors)
     else:
@@ -69,4 +110,5 @@ def register(request):
 
     return render(request, 'register_login/registration.html', {'user_form':user_form,
                                                                 'profile_form':profile_form,
-                                                                'registered':registered})
+                                                                'registered':registered,
+                                                                'warning':warning})

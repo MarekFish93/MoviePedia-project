@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'register_login',
     'db',
     'rest_framework',
-    'movies'
+    'movies',
+    'film'
 ]
 
 MIDDLEWARE = [

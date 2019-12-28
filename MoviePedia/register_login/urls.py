@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-from .views import IndexPageView, register
+# from .views import IndexPageView, register
+from .views import register
 
 app_name = 'register_login'
 

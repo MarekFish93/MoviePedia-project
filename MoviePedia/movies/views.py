@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from rest_framework import viewsets, generics, status
 from db.models import Film, Rate, Comment
-from movies.serializers import FilmSerializer, CommentSerializer, RateSerializer
+from movies.serializers import FilmSerializer, CommentSerializer, CommentSerializerPost, RateSerializer, RateMeanSerializer
 from movies.permissions import IsGetOrIsAuthenticated
 from django.http import Http404, HttpResponseBadRequest
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+import statistics
+from django.db.models import Avg
 
 
 # Create your views here.
@@ -31,9 +33,14 @@ class FilmListView(viewsets.ModelViewSet):
 
 class CommentsListView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = CommentSerializer
     lookup_url_kwarg = 'filmid'
     queryset = Comment.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return CommentSerializer
+        elif self.request.method =='POST':
+            return CommentSerializerPost
 
     def get_queryset(self):
         filmid = self.kwargs.get(self.lookup_url_kwarg)
@@ -59,12 +66,18 @@ class CommentsListView(generics.ListCreateAPIView):
 
 class RateListView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = RateSerializer
     lookup_url_kwarg = 'rateid'
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RateMeanSerializer
+        return RateSerializer
+
     def get_queryset(self):
         rateid = self.kwargs.get(self.lookup_url_kwarg)
-        queryset = Rate.objects.filter(film = rateid)
-        if queryset.exists():
+        queryset = Film.objects.filter(pk = rateid)
+
+        if queryset:
             return queryset
         else:
             raise Http404
